@@ -5,18 +5,18 @@
 vector<int> toBinary(int decimal) {
   
   vector<int> returnVector;
-  vector<int> reverseVector;
+  vector<int> reversedVector;
   
   while(decimal > 0) {
     
-    reversedVector.append(decimal % 2);
+    reversedVector.push_back(decimal % 2);
     decimal /= 2;
     
   }
   
-  for(int i = reversedVector.length; i > 0; i--) {
+  for(int i = reversedVector.size(); i > 0; i--) {
     
-    returnVector.append(reversedVector[i-1]);
+    returnVector.push_back(reversedVector[i-1]);
     
   }
   
