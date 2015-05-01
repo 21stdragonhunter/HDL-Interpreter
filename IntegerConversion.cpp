@@ -23,3 +23,4 @@ vector<int> toBinary(int decimal) {
   return returnVector;
   
 }
+
