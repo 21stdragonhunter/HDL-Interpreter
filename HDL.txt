@@ -1,0 +1,105 @@
+//comment to end of line
+/* comment to close */
+/** API specification and docstring */
+
+file -
+	importDec*
+	chipDec*
+	testDec*
+
+
+importDec -
+	'IMPORT' '"' (fileDir '\')* fileName '"' ';'
+
+chipDec -
+	'CHIP' chipName '{'
+		Header
+		Body
+	'}'
+
+testDec -
+	'TEST' chipName '{'
+		Cycles ',' Base '-' (inName ':' Integer ',')* '|' (outName ':' Integer ',')*
+	'}'
+
+
+
+Header -
+	'IN' inDecs
+	'OUT' outDecs
+	'PIN' pinDecs
+	'CLOCKED' clockDec
+
+Body -
+	partDec*
+
+
+inDecs -
+	(inName('[' busSize ']')? ',')* ';'
+
+outDecs -
+	(outName('[' busSize ']')? ',')* ';'
+
+pinDecs -
+	(pinName('[' busSize ']')? ',')* ';'
+
+clockDec -
+	((inName | outName) ',')* ';'
+
+
+partDec -
+	('BUILTIN')? chipName '(' inDec* ':' outDec* ')' ';'
+	| ((outName('[' busRange ']')?) | (pinName('[' busRange ']')?)) '=' Constant ';'
+
+inDec -
+	inName('[' busRange ']')? '=' (pinName('[' busRange ']')? | Constant)
+
+outDec -
+	 pinName('[' busRange ']')? '=' outName('[' busRange ']')?	
+
+
+chipName -
+	Identifier
+
+inName -
+	Identifier
+
+outName - 
+	Identifier
+
+pinName -
+	Identifier
+
+
+busSize -
+	Decimal
+
+busRange -
+	Decimal '..' Decimal
+
+
+Cylces -
+	Decimal '+' Decimal
+
+Base -
+	'10'
+	| '2'
+
+
+Integer -
+	Decimal
+	| Binary
+
+Constant -
+	0
+	| 1
+
+
+
+the implied value of any pin before it is set is zero, though this may not reflect in reality.
+the cycles designator is used to show how many time units to wait for the output of that test, with the integer after the plus designating after how many time units the next test should begin.
+any unclocked input will update at any time, and unclocked outputs will update at anytime.
+any clocked input will update on a tick, and a clocked output will update on the next tock
+any bus without a size designator in connection declarations will use all of its lines.
+any chip that uses a clocked chip will itself have all of its inputs and outputs clocked.
+the implicit bus size is one, and the implicit bus range is the width of the bus.
